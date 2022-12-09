@@ -22,7 +22,7 @@ COMM	?_OptionsStorage@?1??__local_stdio_printf_options@@9@9:QWORD							; `__loc
 _DATA	ENDS
 pdata	SEGMENT
 $pdata$_LogMessage DD imagerel $LN3
-	DD	imagerel $LN3+263
+	DD	imagerel $LN3+291
 	DD	imagerel $unwind$_LogMessage
 pdata	ENDS
 ;	COMDAT pdata
@@ -50,19 +50,21 @@ $pdata$sprintf DD imagerel $LN3
 	DD	imagerel $unwind$sprintf
 pdata	ENDS
 _DATA	SEGMENT
-$SG120698 DB	'[FATAL]: ', 00H
+$SG120702 DB	'[FATAL]: ', 00H
 	ORG $+6
-$SG120700 DB	'[ERROR]: ', 00H
+$SG120704 DB	'[ERROR]: ', 00H
 	ORG $+6
-$SG120702 DB	'[WARN]: ', 00H
+$SG120706 DB	'[WARN]:  ', 00H
+	ORG $+6
+$SG120708 DB	'[INFO]:  ', 00H
+	ORG $+6
+$SG120710 DB	'[DEBUG]: ', 00H
+	ORG $+6
+$SG120712 DB	'[TRACE]: ', 00H
+	ORG $+2
+$SG120713 DB	'%s%s', 00H
 	ORG $+3
-$SG120709 DB	'%s%s', 0aH, 00H
-	ORG $+6
-$SG120704 DB	'[INFO]: ', 00H
-	ORG $+7
-$SG120706 DB	'[DEBUG]: ', 00H
-	ORG $+6
-$SG120708 DB	'[TRACE]: ', 00H
+$SG120714 DB	'%s%s', 0aH, 00H
 _DATA	ENDS
 ;	COMDAT xdata
 xdata	SEGMENT
@@ -88,13 +90,13 @@ voltbl	SEGMENT
 _volmd	DD	0ffffffffH
 	DDSymXIndex: 	FLAT:_LogMessage
 	DD	02aH
-	DD	0efH
+	DD	010bH
 voltbl	ENDS
 xdata	SEGMENT
 $unwind$_LogMessage DD 023219H
-	DD	0100f0120H
+	DD	0180f0120H
 	DD	imagerel __GSHandlerCheck
-	DD	08060H
+	DD	0c060H
 xdata	ENDS
 ; Function compile flags: /Odtp
 ; File C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\ucrt\stdio.h
@@ -321,60 +323,61 @@ __local_stdio_printf_options PROC			; COMDAT
 __local_stdio_printf_options ENDP
 _TEXT	ENDS
 ; Function compile flags: /Odtp
-; File W:\Butterfly\Engine\src\Butterfly\Logger.c
+; File W:\Butterfly\Engine\src\Butterfly\Core\Logger.c
 _TEXT	SEGMENT
-Written$ = 32
-Args$ = 40
-LevelStrings$ = 48
+Args$ = 32
+LevelStrings$ = 40
 Buffer$ = 96
 OutBuffer$ = 16480
-__$ArrayPad$ = 32864
-LogLevel$ = 32896
-Format$ = 32904
+OutBuffer2$ = 32864
+__$ArrayPad$ = 49248
+LogLevel$ = 49280
+Prefix$ = 49288
+Format$ = 49296
 _LogMessage PROC
 
 ; 8    : {
 
 $LN3:
-  00000	48 89 54 24 10	 mov	 QWORD PTR [rsp+16], rdx
-  00005	89 4c 24 08	 mov	 DWORD PTR [rsp+8], ecx
-  00009	4c 89 44 24 18	 mov	 QWORD PTR [rsp+24], r8
+  00000	4c 89 44 24 18	 mov	 QWORD PTR [rsp+24], r8
+  00005	48 89 54 24 10	 mov	 QWORD PTR [rsp+16], rdx
+  0000a	89 4c 24 08	 mov	 DWORD PTR [rsp+8], ecx
   0000e	4c 89 4c 24 20	 mov	 QWORD PTR [rsp+32], r9
-  00013	b8 78 80 00 00	 mov	 eax, 32888		; 00008078H
+  00013	b8 78 c0 00 00	 mov	 eax, 49272		; 0000c078H
   00018	e8 00 00 00 00	 call	 __chkstk
   0001d	48 2b e0	 sub	 rsp, rax
   00020	48 8b 05 00 00
 	00 00		 mov	 rax, QWORD PTR __security_cookie
   00027	48 33 c4	 xor	 rax, rsp
   0002a	48 89 84 24 60
-	80 00 00	 mov	 QWORD PTR __$ArrayPad$[rsp], rax
+	c0 00 00	 mov	 QWORD PTR __$ArrayPad$[rsp], rax
 
 ; 9    :     char *LevelStrings[6] =
 
   00032	48 8d 05 00 00
-	00 00		 lea	 rax, OFFSET FLAT:$SG120698
-  00039	48 89 44 24 30	 mov	 QWORD PTR LevelStrings$[rsp], rax
-  0003e	48 8d 05 00 00
-	00 00		 lea	 rax, OFFSET FLAT:$SG120700
-  00045	48 89 44 24 38	 mov	 QWORD PTR LevelStrings$[rsp+8], rax
-  0004a	48 8d 05 00 00
 	00 00		 lea	 rax, OFFSET FLAT:$SG120702
-  00051	48 89 44 24 40	 mov	 QWORD PTR LevelStrings$[rsp+16], rax
-  00056	48 8d 05 00 00
+  00039	48 89 44 24 28	 mov	 QWORD PTR LevelStrings$[rsp], rax
+  0003e	48 8d 05 00 00
 	00 00		 lea	 rax, OFFSET FLAT:$SG120704
-  0005d	48 89 44 24 48	 mov	 QWORD PTR LevelStrings$[rsp+24], rax
-  00062	48 8d 05 00 00
+  00045	48 89 44 24 30	 mov	 QWORD PTR LevelStrings$[rsp+8], rax
+  0004a	48 8d 05 00 00
 	00 00		 lea	 rax, OFFSET FLAT:$SG120706
-  00069	48 89 44 24 50	 mov	 QWORD PTR LevelStrings$[rsp+32], rax
-  0006e	48 8d 05 00 00
+  00051	48 89 44 24 38	 mov	 QWORD PTR LevelStrings$[rsp+16], rax
+  00056	48 8d 05 00 00
 	00 00		 lea	 rax, OFFSET FLAT:$SG120708
-  00075	48 89 44 24 58	 mov	 QWORD PTR LevelStrings$[rsp+40], rax
+  0005d	48 89 44 24 40	 mov	 QWORD PTR LevelStrings$[rsp+24], rax
+  00062	48 8d 05 00 00
+	00 00		 lea	 rax, OFFSET FLAT:$SG120710
+  00069	48 89 44 24 48	 mov	 QWORD PTR LevelStrings$[rsp+32], rax
+  0006e	48 8d 05 00 00
+	00 00		 lea	 rax, OFFSET FLAT:$SG120712
+  00075	48 89 44 24 50	 mov	 QWORD PTR LevelStrings$[rsp+40], rax
 
 ; 10   :     {
 ; 11   :         "[FATAL]: ",
 ; 12   :         "[ERROR]: ",
-; 13   :         "[WARN]: ",
-; 14   :         "[INFO]: ",
+; 13   :         "[WARN]:  ",
+; 14   :         "[INFO]:  ",
 ; 15   :         "[DEBUG]: ",
 ; 16   :         "[TRACE]: "
 ; 17   :     };
@@ -384,58 +387,70 @@ $LN3:
 ; 21   :     va_list Args;
 ; 22   :     va_start(Args, Format);
 
-  0007a	48 8d 84 24 90
-	80 00 00	 lea	 rax, QWORD PTR Format$[rsp+8]
-  00082	48 89 44 24 28	 mov	 QWORD PTR Args$[rsp], rax
+  0007a	48 8d 84 24 98
+	c0 00 00	 lea	 rax, QWORD PTR Format$[rsp+8]
+  00082	48 89 44 24 20	 mov	 QWORD PTR Args$[rsp], rax
 
-; 23   :     s32 Written = vsnprintf(Buffer, 16384, Format, Args);
+; 23   :     vsnprintf(Buffer, 16384, Format, Args);
 
-  00087	4c 8b 4c 24 28	 mov	 r9, QWORD PTR Args$[rsp]
-  0008c	4c 8b 84 24 88
-	80 00 00	 mov	 r8, QWORD PTR Format$[rsp]
+  00087	4c 8b 4c 24 20	 mov	 r9, QWORD PTR Args$[rsp]
+  0008c	4c 8b 84 24 90
+	c0 00 00	 mov	 r8, QWORD PTR Format$[rsp]
   00094	ba 00 40 00 00	 mov	 edx, 16384		; 00004000H
   00099	48 8d 4c 24 60	 lea	 rcx, QWORD PTR Buffer$[rsp]
   0009e	e8 00 00 00 00	 call	 vsnprintf
-  000a3	89 44 24 20	 mov	 DWORD PTR Written$[rsp], eax
 
 ; 24   :     va_end(Args);
 
-  000a7	48 c7 44 24 28
+  000a3	48 c7 44 24 20
 	00 00 00 00	 mov	 QWORD PTR Args$[rsp], 0
 
 ; 25   :     
 ; 26   :     char OutBuffer[16384];
-; 27   :     Written = sprintf(OutBuffer, "%s%s\n", LevelStrings[LogLevel], Buffer);
+; 27   :     sprintf(OutBuffer, "%s%s", LevelStrings[LogLevel], Buffer);
 
-  000b0	48 63 84 24 80
-	80 00 00	 movsxd	 rax, DWORD PTR LogLevel$[rsp]
-  000b8	4c 8d 4c 24 60	 lea	 r9, QWORD PTR Buffer$[rsp]
-  000bd	4c 8b 44 c4 30	 mov	 r8, QWORD PTR LevelStrings$[rsp+rax*8]
-  000c2	48 8d 15 00 00
-	00 00		 lea	 rdx, OFFSET FLAT:$SG120709
-  000c9	48 8d 8c 24 60
+  000ac	48 63 84 24 80
+	c0 00 00	 movsxd	 rax, DWORD PTR LogLevel$[rsp]
+  000b4	4c 8d 4c 24 60	 lea	 r9, QWORD PTR Buffer$[rsp]
+  000b9	4c 8b 44 c4 28	 mov	 r8, QWORD PTR LevelStrings$[rsp+rax*8]
+  000be	48 8d 15 00 00
+	00 00		 lea	 rdx, OFFSET FLAT:$SG120713
+  000c5	48 8d 8c 24 60
 	40 00 00	 lea	 rcx, QWORD PTR OutBuffer$[rsp]
-  000d1	e8 00 00 00 00	 call	 sprintf
-  000d6	89 44 24 20	 mov	 DWORD PTR Written$[rsp], eax
+  000cd	e8 00 00 00 00	 call	 sprintf
 
 ; 28   :     
-; 29   :     PlatformConsoleWrite(OutBuffer, LogLevel);
+; 29   :     char OutBuffer2[16384];
+; 30   :     sprintf(OutBuffer2, "%s%s\n", Prefix, OutBuffer);
 
-  000da	0f b6 94 24 80
-	80 00 00	 movzx	 edx, BYTE PTR LogLevel$[rsp]
-  000e2	48 8d 8c 24 60
-	40 00 00	 lea	 rcx, QWORD PTR OutBuffer$[rsp]
-  000ea	e8 00 00 00 00	 call	 PlatformConsoleWrite
+  000d2	4c 8d 8c 24 60
+	40 00 00	 lea	 r9, QWORD PTR OutBuffer$[rsp]
+  000da	4c 8b 84 24 88
+	c0 00 00	 mov	 r8, QWORD PTR Prefix$[rsp]
+  000e2	48 8d 15 00 00
+	00 00		 lea	 rdx, OFFSET FLAT:$SG120714
+  000e9	48 8d 8c 24 60
+	80 00 00	 lea	 rcx, QWORD PTR OutBuffer2$[rsp]
+  000f1	e8 00 00 00 00	 call	 sprintf
 
-; 30   : }
+; 31   :     
+; 32   :     PlatformConsoleWrite(OutBuffer2, LogLevel);
 
-  000ef	48 8b 8c 24 60
-	80 00 00	 mov	 rcx, QWORD PTR __$ArrayPad$[rsp]
-  000f7	48 33 cc	 xor	 rcx, rsp
-  000fa	e8 00 00 00 00	 call	 __security_check_cookie
-  000ff	48 81 c4 78 80
-	00 00		 add	 rsp, 32888		; 00008078H
-  00106	c3		 ret	 0
+  000f6	0f b6 94 24 80
+	c0 00 00	 movzx	 edx, BYTE PTR LogLevel$[rsp]
+  000fe	48 8d 8c 24 60
+	80 00 00	 lea	 rcx, QWORD PTR OutBuffer2$[rsp]
+  00106	e8 00 00 00 00	 call	 PlatformConsoleWrite
+
+; 33   : }
+
+  0010b	48 8b 8c 24 60
+	c0 00 00	 mov	 rcx, QWORD PTR __$ArrayPad$[rsp]
+  00113	48 33 cc	 xor	 rcx, rsp
+  00116	e8 00 00 00 00	 call	 __security_check_cookie
+  0011b	48 81 c4 78 c0
+	00 00		 add	 rsp, 49272		; 0000c078H
+  00122	c3		 ret	 0
 _LogMessage ENDP
 _TEXT	ENDS
 END

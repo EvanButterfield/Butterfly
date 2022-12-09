@@ -21,12 +21,13 @@ EXTRN	__imp_CreateWindowExW:PROC
 EXTRN	__imp_LoadCursorW:PROC
 EXTRN	__imp_WriteConsoleA:PROC
 EXTRN	__imp_SetConsoleTextAttribute:PROC
+EXTRN	_LogMessage:PROC
 EXTRN	__GSHandlerCheck:PROC
 EXTRN	__security_check_cookie:PROC
 EXTRN	__security_cookie:QWORD
 pdata	SEGMENT
-$pdata$InitializePlatform DD imagerel $LN5
-	DD	imagerel $LN5+314
+$pdata$InitializePlatform DD imagerel $LN7
+	DD	imagerel $LN7+429
 	DD	imagerel $unwind$InitializePlatform
 $pdata$UpdatePlatform DD imagerel $LN5
 	DD	imagerel $LN5+64
@@ -39,10 +40,30 @@ $pdata$Win32WindowProc DD imagerel Win32WindowProc
 	DD	imagerel $unwind$Win32WindowProc
 pdata	ENDS
 _DATA	SEGMENT
-$SG117887 DB	'B', 00H, 'u', 00H, 't', 00H, 't', 00H, 'e', 00H, 'r', 00H
+$SG117903 DB	'B', 00H, 'u', 00H, 't', 00H, 't', 00H, 'e', 00H, 'r', 00H
 	DB	'f', 00H, 'l', 00H, 'y', 00H, 'W', 00H, 'i', 00H, 'n', 00H, 'd'
 	DB	00H, 'o', 00H, 'w', 00H, 'C', 00H, 'l', 00H, 'a', 00H, 's', 00H
 	DB	's', 00H, 00H, 00H
+	ORG $+6
+$SG117906 DB	'W:\Butterfly\Engine\src\Butterfly\Platform\WinPlatform.c'
+	DB	00H
+	ORG $+7
+$SG117907 DB	'Failed to Register Window Class', 00H
+$SG117908 DB	'%s: Assertion failed in file: %s on line: %d', 00H
+	ORG $+3
+$SG117909 DB	'[Engine]: ', 00H
+	ORG $+5
+$SG117912 DB	'W:\Butterfly\Engine\src\Butterfly\Platform\WinPlatform.c'
+	DB	00H
+	ORG $+7
+$SG117913 DB	'Failed to Create Window', 00H
+$SG117914 DB	'%s: Assertion failed in file: %s on line: %d', 00H
+	ORG $+3
+$SG117915 DB	'[Engine]: ', 00H
+	ORG $+5
+$SG117916 DB	'Initialized Platform', 00H
+	ORG $+3
+$SG117917 DB	'[Engine]: ', 00H
 _DATA	ENDS
 voltbl	SEGMENT
 _volmd	DD	0ffffffffH
@@ -64,7 +85,7 @@ $unwind$Win32WindowProc DD 011701H
 	DD	06217H
 xdata	ENDS
 ; Function compile flags: /Odtp
-; File W:\Butterfly\Engine\src\Butterfly\WinPlatform.c
+; File W:\Butterfly\Engine\src\Butterfly\Platform\WinPlatform.c
 _TEXT	SEGMENT
 tv64 = 32
 Result$ = 40
@@ -74,7 +95,7 @@ WParam$ = 80
 LParam$ = 88
 Win32WindowProc PROC
 
-; 11   : {
+; 12   : {
 
   00000	4c 89 4c 24 20	 mov	 QWORD PTR [rsp+32], r9
   00005	4c 89 44 24 18	 mov	 QWORD PTR [rsp+24], r8
@@ -82,21 +103,21 @@ Win32WindowProc PROC
   0000e	48 89 4c 24 08	 mov	 QWORD PTR [rsp+8], rcx
   00013	48 83 ec 38	 sub	 rsp, 56			; 00000038H
 
-; 12   :     LRESULT Result = 0;
+; 13   :     LRESULT Result = 0;
 
   00017	48 c7 44 24 28
 	00 00 00 00	 mov	 QWORD PTR Result$[rsp], 0
 
-; 13   :     
-; 14   :     switch(Message)
+; 14   :     
+; 15   :     switch(Message)
 
   00020	8b 44 24 48	 mov	 eax, DWORD PTR Message$[rsp]
   00024	89 44 24 20	 mov	 DWORD PTR tv64[rsp], eax
 
-; 15   :     {
-; 16   :         default:
-; 17   :         {
-; 18   :             Result = DefWindowProc(Window, Message, WParam, LParam);
+; 16   :     {
+; 17   :         default:
+; 18   :         {
+; 19   :             Result = DefWindowProc(Window, Message, WParam, LParam);
 
   00028	4c 8b 4c 24 58	 mov	 r9, QWORD PTR LParam$[rsp]
   0002d	4c 8b 44 24 50	 mov	 r8, QWORD PTR WParam$[rsp]
@@ -106,21 +127,21 @@ Win32WindowProc PROC
 	00		 call	 QWORD PTR __imp_DefWindowProcW
   00041	48 89 44 24 28	 mov	 QWORD PTR Result$[rsp], rax
 
-; 19   :         } break;
-; 20   :     }
-; 21   :     
-; 22   :     return(Result);
+; 20   :         } break;
+; 21   :     }
+; 22   :     
+; 23   :     return(Result);
 
   00046	48 8b 44 24 28	 mov	 rax, QWORD PTR Result$[rsp]
 
-; 23   : }
+; 24   : }
 
   0004b	48 83 c4 38	 add	 rsp, 56			; 00000038H
   0004f	c3		 ret	 0
 Win32WindowProc ENDP
 _TEXT	ENDS
 ; Function compile flags: /Odtp
-; File W:\Butterfly\Engine\src\Butterfly\WinPlatform.c
+; File W:\Butterfly\Engine\src\Butterfly\Platform\WinPlatform.c
 _TEXT	SEGMENT
 tv83 = 48
 Length$ = 56
@@ -132,7 +153,7 @@ Message$ = 112
 Color$ = 120
 PlatformConsoleWrite PROC
 
-; 68   : {
+; 63   : {
 
 $LN4:
   00000	88 54 24 10	 mov	 BYTE PTR [rsp+16], dl
@@ -143,15 +164,15 @@ $LN4:
   00014	48 33 c4	 xor	 rax, rsp
   00017	48 89 44 24 58	 mov	 QWORD PTR __$ArrayPad$[rsp], rax
 
-; 69   :     HANDLE Console = GetStdHandle(STD_OUTPUT_HANDLE);
+; 64   :     HANDLE Console = GetStdHandle(STD_OUTPUT_HANDLE);
 
   0001c	b9 f5 ff ff ff	 mov	 ecx, -11		; fffffff5H
   00021	ff 15 00 00 00
 	00		 call	 QWORD PTR __imp_GetStdHandle
   00027	48 89 44 24 40	 mov	 QWORD PTR Console$[rsp], rax
 
-; 70   :     
-; 71   :     u8 Levels[6] = {64, 4, 6, 2, 1, 8};
+; 65   :     
+; 66   :     u8 Levels[6] = {64, 4, 6, 2, 1, 8};
 
   0002c	c6 44 24 50 40	 mov	 BYTE PTR Levels$[rsp], 64 ; 00000040H
   00031	c6 44 24 51 04	 mov	 BYTE PTR Levels$[rsp+1], 4
@@ -160,7 +181,7 @@ $LN4:
   00040	c6 44 24 54 01	 mov	 BYTE PTR Levels$[rsp+4], 1
   00045	c6 44 24 55 08	 mov	 BYTE PTR Levels$[rsp+5], 8
 
-; 72   :     SetConsoleTextAttribute(Console, Levels[Color]);
+; 67   :     SetConsoleTextAttribute(Console, Levels[Color]);
 
   0004a	0f b6 44 24 78	 movzx	 eax, BYTE PTR Color$[rsp]
   0004f	0f b6 44 04 50	 movzx	 eax, BYTE PTR Levels$[rsp+rax]
@@ -169,14 +190,14 @@ $LN4:
   0005c	ff 15 00 00 00
 	00		 call	 QWORD PTR __imp_SetConsoleTextAttribute
 
-; 73   :     
-; 74   :     OutputDebugStringA(Message);
+; 68   :     
+; 69   :     OutputDebugStringA(Message);
 
   00062	48 8b 4c 24 70	 mov	 rcx, QWORD PTR Message$[rsp]
   00067	ff 15 00 00 00
 	00		 call	 QWORD PTR __imp_OutputDebugStringA
 
-; 75   :     DWORD Length = (DWORD)strlen(Message);
+; 70   :     DWORD Length = (DWORD)strlen(Message);
 
   0006d	48 8b 44 24 70	 mov	 rax, QWORD PTR Message$[rsp]
   00072	48 89 44 24 48	 mov	 QWORD PTR tv82[rsp], rax
@@ -191,7 +212,7 @@ $LL3@PlatformCo:
   00095	48 8b 44 24 30	 mov	 rax, QWORD PTR tv83[rsp]
   0009a	89 44 24 38	 mov	 DWORD PTR Length$[rsp], eax
 
-; 76   :     WriteConsoleA(Console, Message, Length, 0, 0);
+; 71   :     WriteConsoleA(Console, Message, Length, 0, 0);
 
   0009e	48 c7 44 24 20
 	00 00 00 00	 mov	 QWORD PTR [rsp+32], 0
@@ -202,7 +223,7 @@ $LL3@PlatformCo:
   000b9	ff 15 00 00 00
 	00		 call	 QWORD PTR __imp_WriteConsoleA
 
-; 77   : }
+; 72   : }
 
   000bf	48 8b 4c 24 58	 mov	 rcx, QWORD PTR __$ArrayPad$[rsp]
   000c4	48 33 cc	 xor	 rcx, rsp
@@ -212,19 +233,19 @@ $LL3@PlatformCo:
 PlatformConsoleWrite ENDP
 _TEXT	ENDS
 ; Function compile flags: /Odtp
-; File W:\Butterfly\Engine\src\Butterfly\WinPlatform.c
+; File W:\Butterfly\Engine\src\Butterfly\Platform\WinPlatform.c
 _TEXT	SEGMENT
 Message$ = 48
 UpdatePlatform PROC
 
-; 58   : {
+; 53   : {
 
 $LN5:
   00000	48 83 ec 68	 sub	 rsp, 104		; 00000068H
 $LN2@UpdatePlat:
 
-; 59   :     MSG Message;
-; 60   :     while(PeekMessageA(&Message, 0, 0, 0, PM_REMOVE))
+; 54   :     MSG Message;
+; 55   :     while(PeekMessageA(&Message, 0, 0, 0, PM_REMOVE))
 
   00004	c7 44 24 20 01
 	00 00 00	 mov	 DWORD PTR [rsp+32], 1
@@ -237,47 +258,47 @@ $LN2@UpdatePlat:
   0001f	85 c0		 test	 eax, eax
   00021	74 18		 je	 SHORT $LN3@UpdatePlat
 
-; 61   :     {
-; 62   :         TranslateMessage(&Message);
+; 56   :     {
+; 57   :         TranslateMessage(&Message);
 
   00023	48 8d 4c 24 30	 lea	 rcx, QWORD PTR Message$[rsp]
   00028	ff 15 00 00 00
 	00		 call	 QWORD PTR __imp_TranslateMessage
 
-; 63   :         DispatchMessageA(&Message);
+; 58   :         DispatchMessageA(&Message);
 
   0002e	48 8d 4c 24 30	 lea	 rcx, QWORD PTR Message$[rsp]
   00033	ff 15 00 00 00
 	00		 call	 QWORD PTR __imp_DispatchMessageA
 
-; 64   :     }
+; 59   :     }
 
   00039	eb c9		 jmp	 SHORT $LN2@UpdatePlat
 $LN3@UpdatePlat:
 
-; 65   : }
+; 60   : }
 
   0003b	48 83 c4 68	 add	 rsp, 104		; 00000068H
   0003f	c3		 ret	 0
 UpdatePlatform ENDP
 _TEXT	ENDS
 ; Function compile flags: /Odtp
-; File W:\Butterfly\Engine\src\Butterfly\WinPlatform.c
+; File W:\Butterfly\Engine\src\Butterfly\Platform\WinPlatform.c
 _TEXT	SEGMENT
 State$ = 96
 WindowClass$ = 112
 WindowName$ = 208
 InitializePlatform PROC
 
-; 26   : {
+; 27   : {
 
-$LN5:
+$LN7:
   00000	48 89 4c 24 08	 mov	 QWORD PTR [rsp+8], rcx
   00005	57		 push	 rdi
   00006	48 81 ec c0 00
 	00 00		 sub	 rsp, 192		; 000000c0H
 
-; 27   :     win_state *State = VirtualAlloc(0, sizeof(win_state), MEM_COMMIT|MEM_RESERVE, PAGE_READWRITE);
+; 28   :     win_state *State = VirtualAlloc(0, sizeof(win_state), MEM_COMMIT|MEM_RESERVE, PAGE_READWRITE);
 
   0000d	41 b9 04 00 00
 	00		 mov	 r9d, 4
@@ -289,7 +310,7 @@ $LN5:
 	00		 call	 QWORD PTR __imp_VirtualAlloc
   00026	48 89 44 24 60	 mov	 QWORD PTR State$[rsp], rax
 
-; 28   :     State->Instance = GetModuleHandle(0);
+; 29   :     State->Instance = GetModuleHandle(0);
 
   0002b	33 c9		 xor	 ecx, ecx
   0002d	ff 15 00 00 00
@@ -297,8 +318,8 @@ $LN5:
   00033	48 8b 4c 24 60	 mov	 rcx, QWORD PTR State$[rsp]
   00038	48 89 01	 mov	 QWORD PTR [rcx], rax
 
-; 29   :     
-; 30   :     WNDCLASSW WindowClass = {0};
+; 30   :     
+; 31   :     WNDCLASSW WindowClass = {0};
 
   0003b	48 8d 44 24 70	 lea	 rax, QWORD PTR WindowClass$[rsp]
   00040	48 8b f8	 mov	 rdi, rax
@@ -306,25 +327,25 @@ $LN5:
   00045	b9 48 00 00 00	 mov	 ecx, 72			; 00000048H
   0004a	f3 aa		 rep stosb
 
-; 31   :     WindowClass.style = CS_HREDRAW|CS_VREDRAW;
+; 32   :     WindowClass.style = CS_HREDRAW|CS_VREDRAW;
 
   0004c	c7 44 24 70 03
 	00 00 00	 mov	 DWORD PTR WindowClass$[rsp], 3
 
-; 32   :     WindowClass.lpfnWndProc = Win32WindowProc;
+; 33   :     WindowClass.lpfnWndProc = Win32WindowProc;
 
   00054	48 8d 05 00 00
 	00 00		 lea	 rax, OFFSET FLAT:Win32WindowProc
   0005b	48 89 44 24 78	 mov	 QWORD PTR WindowClass$[rsp+8], rax
 
-; 33   :     WindowClass.hInstance = State->Instance;
+; 34   :     WindowClass.hInstance = State->Instance;
 
   00060	48 8b 44 24 60	 mov	 rax, QWORD PTR State$[rsp]
   00065	48 8b 00	 mov	 rax, QWORD PTR [rax]
   00068	48 89 84 24 88
 	00 00 00	 mov	 QWORD PTR WindowClass$[rsp+24], rax
 
-; 34   :     WindowClass.hCursor = LoadCursorW(0, IDC_ARROW);
+; 35   :     WindowClass.hCursor = LoadCursorW(0, IDC_ARROW);
 
   00070	ba 00 7f 00 00	 mov	 edx, 32512		; 00007f00H
   00075	33 c9		 xor	 ecx, ecx
@@ -333,95 +354,120 @@ $LN5:
   0007d	48 89 84 24 98
 	00 00 00	 mov	 QWORD PTR WindowClass$[rsp+40], rax
 
-; 35   :     WindowClass.lpszClassName = L"ButterflyWindowClass";
+; 36   :     WindowClass.lpszClassName = L"ButterflyWindowClass";
 
   00085	48 8d 05 00 00
-	00 00		 lea	 rax, OFFSET FLAT:$SG117887
+	00 00		 lea	 rax, OFFSET FLAT:$SG117903
   0008c	48 89 84 24 b0
 	00 00 00	 mov	 QWORD PTR WindowClass$[rsp+64], rax
 
-; 36   :     
-; 37   :     if(!RegisterClassW(&WindowClass))
+; 37   :     
+; 38   :     BASSERT(RegisterClassW(&WindowClass), "Failed to Register Window Class");
 
   00094	48 8d 4c 24 70	 lea	 rcx, QWORD PTR WindowClass$[rsp]
   00099	ff 15 00 00 00
 	00		 call	 QWORD PTR __imp_RegisterClassW
   0009f	0f b7 c0	 movzx	 eax, ax
   000a2	85 c0		 test	 eax, eax
-  000a4	75 07		 jne	 SHORT $LN2@Initialize
-
-; 38   :     {
-; 39   :         //TODO(evan): Logging
-; 40   :         return 0;
-
-  000a6	33 c0		 xor	 eax, eax
-  000a8	e9 84 00 00 00	 jmp	 $LN1@Initialize
+  000a4	74 02		 je	 SHORT $LN2@Initialize
+  000a6	eb 31		 jmp	 SHORT $LN3@Initialize
 $LN2@Initialize:
-
-; 41   :     }
-; 42   :     
-; 43   :     State->Window = CreateWindowW(WindowClass.lpszClassName, WindowName,
-
-  000ad	48 c7 44 24 58
-	00 00 00 00	 mov	 QWORD PTR [rsp+88], 0
-  000b6	48 8b 44 24 60	 mov	 rax, QWORD PTR State$[rsp]
-  000bb	48 8b 00	 mov	 rax, QWORD PTR [rax]
-  000be	48 89 44 24 50	 mov	 QWORD PTR [rsp+80], rax
-  000c3	48 c7 44 24 48
-	00 00 00 00	 mov	 QWORD PTR [rsp+72], 0
-  000cc	48 c7 44 24 40
-	00 00 00 00	 mov	 QWORD PTR [rsp+64], 0
-  000d5	c7 44 24 38 00
-	00 00 80	 mov	 DWORD PTR [rsp+56], -2147483648 ; ffffffff80000000H
-  000dd	c7 44 24 30 00
-	00 00 80	 mov	 DWORD PTR [rsp+48], -2147483648 ; ffffffff80000000H
-  000e5	c7 44 24 28 00
-	00 00 80	 mov	 DWORD PTR [rsp+40], -2147483648 ; ffffffff80000000H
-  000ed	c7 44 24 20 00
-	00 00 80	 mov	 DWORD PTR [rsp+32], -2147483648 ; ffffffff80000000H
-  000f5	41 b9 00 00 cf
-	10		 mov	 r9d, 282001408		; 10cf0000H
-  000fb	4c 8b 84 24 d0
-	00 00 00	 mov	 r8, QWORD PTR WindowName$[rsp]
-  00103	48 8b 94 24 b0
-	00 00 00	 mov	 rdx, QWORD PTR WindowClass$[rsp+64]
-  0010b	33 c9		 xor	 ecx, ecx
-  0010d	ff 15 00 00 00
-	00		 call	 QWORD PTR __imp_CreateWindowExW
-  00113	48 8b 4c 24 60	 mov	 rcx, QWORD PTR State$[rsp]
-  00118	48 89 41 08	 mov	 QWORD PTR [rcx+8], rax
-
-; 44   :                                   WS_OVERLAPPEDWINDOW|WS_VISIBLE,
-; 45   :                                   CW_USEDEFAULT, CW_USEDEFAULT,
-; 46   :                                   CW_USEDEFAULT, CW_USEDEFAULT,
-; 47   :                                   0, 0, State->Instance, 0);
-; 48   :     if(!State->Window)
-
-  0011c	48 8b 44 24 60	 mov	 rax, QWORD PTR State$[rsp]
-  00121	48 83 78 08 00	 cmp	 QWORD PTR [rax+8], 0
-  00126	75 04		 jne	 SHORT $LN3@Initialize
-
-; 49   :     {
-; 50   :         //TODO(evan): Logging
-; 51   :         return 0;
-
-  00128	33 c0		 xor	 eax, eax
-  0012a	eb 05		 jmp	 SHORT $LN1@Initialize
+  000a8	c7 44 24 28 26
+	00 00 00	 mov	 DWORD PTR [rsp+40], 38	; 00000026H
+  000b0	48 8d 05 00 00
+	00 00		 lea	 rax, OFFSET FLAT:$SG117906
+  000b7	48 89 44 24 20	 mov	 QWORD PTR [rsp+32], rax
+  000bc	4c 8d 0d 00 00
+	00 00		 lea	 r9, OFFSET FLAT:$SG117907
+  000c3	4c 8d 05 00 00
+	00 00		 lea	 r8, OFFSET FLAT:$SG117908
+  000ca	48 8d 15 00 00
+	00 00		 lea	 rdx, OFFSET FLAT:$SG117909
+  000d1	33 c9		 xor	 ecx, ecx
+  000d3	e8 00 00 00 00	 call	 _LogMessage
+  000d8	cc		 int	 3
 $LN3@Initialize:
 
-; 52   :     }
-; 53   :     
-; 54   :     return State;
+; 39   :     
+; 40   :     State->Window = CreateWindowW(WindowClass.lpszClassName, WindowName,
 
-  0012c	48 8b 44 24 60	 mov	 rax, QWORD PTR State$[rsp]
-$LN1@Initialize:
+  000d9	48 c7 44 24 58
+	00 00 00 00	 mov	 QWORD PTR [rsp+88], 0
+  000e2	48 8b 44 24 60	 mov	 rax, QWORD PTR State$[rsp]
+  000e7	48 8b 00	 mov	 rax, QWORD PTR [rax]
+  000ea	48 89 44 24 50	 mov	 QWORD PTR [rsp+80], rax
+  000ef	48 c7 44 24 48
+	00 00 00 00	 mov	 QWORD PTR [rsp+72], 0
+  000f8	48 c7 44 24 40
+	00 00 00 00	 mov	 QWORD PTR [rsp+64], 0
+  00101	c7 44 24 38 00
+	00 00 80	 mov	 DWORD PTR [rsp+56], -2147483648 ; ffffffff80000000H
+  00109	c7 44 24 30 00
+	00 00 80	 mov	 DWORD PTR [rsp+48], -2147483648 ; ffffffff80000000H
+  00111	c7 44 24 28 00
+	00 00 80	 mov	 DWORD PTR [rsp+40], -2147483648 ; ffffffff80000000H
+  00119	c7 44 24 20 00
+	00 00 80	 mov	 DWORD PTR [rsp+32], -2147483648 ; ffffffff80000000H
+  00121	41 b9 00 00 cf
+	10		 mov	 r9d, 282001408		; 10cf0000H
+  00127	4c 8b 84 24 d0
+	00 00 00	 mov	 r8, QWORD PTR WindowName$[rsp]
+  0012f	48 8b 94 24 b0
+	00 00 00	 mov	 rdx, QWORD PTR WindowClass$[rsp+64]
+  00137	33 c9		 xor	 ecx, ecx
+  00139	ff 15 00 00 00
+	00		 call	 QWORD PTR __imp_CreateWindowExW
+  0013f	48 8b 4c 24 60	 mov	 rcx, QWORD PTR State$[rsp]
+  00144	48 89 41 08	 mov	 QWORD PTR [rcx+8], rax
 
-; 55   : }
+; 41   :                                   WS_OVERLAPPEDWINDOW|WS_VISIBLE,
+; 42   :                                   CW_USEDEFAULT, CW_USEDEFAULT,
+; 43   :                                   CW_USEDEFAULT, CW_USEDEFAULT,
+; 44   :                                   0, 0, State->Instance, 0);
+; 45   :     BASSERT(State->Window, "Failed to Create Window");
 
-  00131	48 81 c4 c0 00
+  00148	48 8b 44 24 60	 mov	 rax, QWORD PTR State$[rsp]
+  0014d	48 83 78 08 00	 cmp	 QWORD PTR [rax+8], 0
+  00152	74 02		 je	 SHORT $LN4@Initialize
+  00154	eb 31		 jmp	 SHORT $LN5@Initialize
+$LN4@Initialize:
+  00156	c7 44 24 28 2d
+	00 00 00	 mov	 DWORD PTR [rsp+40], 45	; 0000002dH
+  0015e	48 8d 05 00 00
+	00 00		 lea	 rax, OFFSET FLAT:$SG117912
+  00165	48 89 44 24 20	 mov	 QWORD PTR [rsp+32], rax
+  0016a	4c 8d 0d 00 00
+	00 00		 lea	 r9, OFFSET FLAT:$SG117913
+  00171	4c 8d 05 00 00
+	00 00		 lea	 r8, OFFSET FLAT:$SG117914
+  00178	48 8d 15 00 00
+	00 00		 lea	 rdx, OFFSET FLAT:$SG117915
+  0017f	33 c9		 xor	 ecx, ecx
+  00181	e8 00 00 00 00	 call	 _LogMessage
+  00186	cc		 int	 3
+$LN5@Initialize:
+
+; 46   :     
+; 47   :     BTRACE("Initialized Platform");
+
+  00187	4c 8d 05 00 00
+	00 00		 lea	 r8, OFFSET FLAT:$SG117916
+  0018e	48 8d 15 00 00
+	00 00		 lea	 rdx, OFFSET FLAT:$SG117917
+  00195	b9 05 00 00 00	 mov	 ecx, 5
+  0019a	e8 00 00 00 00	 call	 _LogMessage
+
+; 48   :     
+; 49   :     return State;
+
+  0019f	48 8b 44 24 60	 mov	 rax, QWORD PTR State$[rsp]
+
+; 50   : }
+
+  001a4	48 81 c4 c0 00
 	00 00		 add	 rsp, 192		; 000000c0H
-  00138	5f		 pop	 rdi
-  00139	c3		 ret	 0
+  001ab	5f		 pop	 rdi
+  001ac	c3		 ret	 0
 InitializePlatform ENDP
 _TEXT	ENDS
 END

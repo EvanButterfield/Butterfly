@@ -3,8 +3,9 @@
 #ifndef _BUTTERFLY_H
 #define _BUTTERFLY_H
 
-#include "Butterfly/Entry.h"
-#include "Butterfly/Platform.h"
-#include "Butterfly/Logger.h"
+#include "Butterfly/Core/Entry.h"
+#include "Butterfly/Core/Logger.h"
+
+#include "Butterfly/Platform/Platform.h"
 
 #endif //_BUTTERFLY_H

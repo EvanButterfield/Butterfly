@@ -12,9 +12,9 @@ pushd ..\Bin
 
 set CompileFlags=-UTF8 -MTd -nologo -Gm- -GR- -EHa- -Od -Oi -WX -W4 -wd4221 -wd4505 -wd4201 -wd4100 -wd4189 -wd4115 -wd4101 -wd4996 -FAsc -Z7
 
-set Defines=-DBTF_PLATFORM_WINDOWS -DBTF_SANDBOX -DBTF_DEBUG -DUNICODE=1
+set Defines=-DBTF_PLATFORM_WINDOWS -DBTF_APP -DBTF_DEBUG -DUNICODE=1
 
-set Includes=-I..\Engine\src
+set Includes=-I..\Engine\src -IW:\Butterfly\Engine\src\Butterfly
 
 set LinkFlags=-incremental:no -opt:ref Engine.lib user32.lib
 

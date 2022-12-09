@@ -9,27 +9,31 @@ PUBLIC	RunApplication
 PUBLIC	main
 EXTRN	__imp_InitializePlatform:PROC
 EXTRN	__imp_UpdatePlatform:PROC
+EXTRN	__imp__LogMessage:PROC
 pdata	SEGMENT
 $pdata$RunApplication DD imagerel $LN5
-	DD	imagerel $LN5+24
+	DD	imagerel $LN5+54
 	DD	imagerel $unwind$RunApplication
 $pdata$main DD	imagerel $LN3
-	DD	imagerel $LN3+40
+	DD	imagerel $LN3+45
 	DD	imagerel $unwind$main
 pdata	ENDS
 _DATA	SEGMENT
-$SG117862 DB	'B', 00H, 'u', 00H, 't', 00H, 't', 00H, 'e', 00H, 'r', 00H
+$SG117864 DB	'B', 00H, 'u', 00H, 't', 00H, 't', 00H, 'e', 00H, 'r', 00H
 	DB	'f', 00H, 'l', 00H, 'y', 00H, ' ', 00H, 'E', 00H, 'n', 00H, 'g'
 	DB	00H, 'i', 00H, 'n', 00H, 'e', 00H, 00H, 00H
+	ORG $+6
+$SG117886 DB	'Initialized Application', 00H
+$SG117887 DB	'[App]:    ', 00H
 _DATA	ENDS
 xdata	SEGMENT
-$unwind$RunApplication DD 010401H
-	DD	04204H
+$unwind$RunApplication DD 010901H
+	DD	04209H
 $unwind$main DD	010401H
 	DD	06204H
 xdata	ENDS
 ; Function compile flags: /Odtp
-; File W:\Butterfly\Engine\src\Butterfly\Entry.h
+; File W:\Butterfly\Engine\src\Butterfly\Core\Entry.h
 _TEXT	SEGMENT
 ErrorCode$ = 32
 PlatformData$ = 40
@@ -43,60 +47,74 @@ $LN3:
 ; 13   :     void *PlatformData = InitializePlatform(L"Butterfly Engine");
 
   00004	48 8d 0d 00 00
-	00 00		 lea	 rcx, OFFSET FLAT:$SG117862
+	00 00		 lea	 rcx, OFFSET FLAT:$SG117864
   0000b	ff 15 00 00 00
 	00		 call	 QWORD PTR __imp_InitializePlatform
   00011	48 89 44 24 28	 mov	 QWORD PTR PlatformData$[rsp], rax
 
 ; 14   :     
-; 15   :     int ErrorCode = RunApplication();
+; 15   :     int ErrorCode = RunApplication(PlatformData);
 
-  00016	e8 00 00 00 00	 call	 RunApplication
-  0001b	89 44 24 20	 mov	 DWORD PTR ErrorCode$[rsp], eax
+  00016	48 8b 4c 24 28	 mov	 rcx, QWORD PTR PlatformData$[rsp]
+  0001b	e8 00 00 00 00	 call	 RunApplication
+  00020	89 44 24 20	 mov	 DWORD PTR ErrorCode$[rsp], eax
 
 ; 16   :     
 ; 17   :     return(ErrorCode);
 
-  0001f	8b 44 24 20	 mov	 eax, DWORD PTR ErrorCode$[rsp]
+  00024	8b 44 24 20	 mov	 eax, DWORD PTR ErrorCode$[rsp]
 
 ; 18   : }
 
-  00023	48 83 c4 38	 add	 rsp, 56			; 00000038H
-  00027	c3		 ret	 0
+  00028	48 83 c4 38	 add	 rsp, 56			; 00000038H
+  0002c	c3		 ret	 0
 main	ENDP
 _TEXT	ENDS
 ; Function compile flags: /Odtp
 ; File W:\Butterfly\Sandbox\src\Sandbox.c
 _TEXT	SEGMENT
+PlatformData$ = 48
 RunApplication PROC
 
 ; 4    : {
 
 $LN5:
-  00000	48 83 ec 28	 sub	 rsp, 40			; 00000028H
+  00000	48 89 4c 24 08	 mov	 QWORD PTR [rsp+8], rcx
+  00005	48 83 ec 28	 sub	 rsp, 40			; 00000028H
+
+; 5    :     BTRACE("Initialized Application");
+
+  00009	4c 8d 05 00 00
+	00 00		 lea	 r8, OFFSET FLAT:$SG117886
+  00010	48 8d 15 00 00
+	00 00		 lea	 rdx, OFFSET FLAT:$SG117887
+  00017	b9 05 00 00 00	 mov	 ecx, 5
+  0001c	ff 15 00 00 00
+	00		 call	 QWORD PTR __imp__LogMessage
 $LN2@RunApplica:
 
-; 5    :     while(TRUE)
+; 6    :     
+; 7    :     while(TRUE)
 
-  00004	33 c0		 xor	 eax, eax
-  00006	83 f8 01	 cmp	 eax, 1
-  00009	74 08		 je	 SHORT $LN3@RunApplica
+  00022	33 c0		 xor	 eax, eax
+  00024	83 f8 01	 cmp	 eax, 1
+  00027	74 08		 je	 SHORT $LN3@RunApplica
 
-; 6    :     {
-; 7    :         UpdatePlatform();
+; 8    :     {
+; 9    :         UpdatePlatform();
 
-  0000b	ff 15 00 00 00
+  00029	ff 15 00 00 00
 	00		 call	 QWORD PTR __imp_UpdatePlatform
 
-; 8    :     }
+; 10   :     }
 
-  00011	eb f1		 jmp	 SHORT $LN2@RunApplica
+  0002f	eb f1		 jmp	 SHORT $LN2@RunApplica
 $LN3@RunApplica:
 
-; 9    : }
+; 11   : }
 
-  00013	48 83 c4 28	 add	 rsp, 40			; 00000028H
-  00017	c3		 ret	 0
+  00031	48 83 c4 28	 add	 rsp, 40			; 00000028H
+  00035	c3		 ret	 0
 RunApplication ENDP
 _TEXT	ENDS
 END

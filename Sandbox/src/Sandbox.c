@@ -1,7 +1,9 @@
 #include <Butterfly.h>
 
-int RunApplication()
+int RunApplication(void *PlatformData)
 {
+    BTRACE("Initialized Application");
+    
     while(TRUE)
     {
         UpdatePlatform();
