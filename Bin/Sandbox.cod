@@ -9,21 +9,18 @@ PUBLIC	RunApplication
 PUBLIC	main
 EXTRN	__imp_InitializePlatform:PROC
 EXTRN	__imp_UpdatePlatform:PROC
-EXTRN	__imp_PlatformConsoleWrite:PROC
 pdata	SEGMENT
 $pdata$RunApplication DD imagerel $LN5
-	DD	imagerel $LN5+39
+	DD	imagerel $LN5+24
 	DD	imagerel $unwind$RunApplication
 $pdata$main DD	imagerel $LN3
 	DD	imagerel $LN3+40
 	DD	imagerel $unwind$main
 pdata	ENDS
 _DATA	SEGMENT
-$SG96717 DB	'B', 00H, 'u', 00H, 't', 00H, 't', 00H, 'e', 00H, 'r', 00H
+$SG117862 DB	'B', 00H, 'u', 00H, 't', 00H, 't', 00H, 'e', 00H, 'r', 00H
 	DB	'f', 00H, 'l', 00H, 'y', 00H, ' ', 00H, 'E', 00H, 'n', 00H, 'g'
 	DB	00H, 'i', 00H, 'n', 00H, 'e', 00H, 00H, 00H
-	ORG $+6
-$SG96721 DB	'This is a test!', 00H
 _DATA	ENDS
 xdata	SEGMENT
 $unwind$RunApplication DD 010401H
@@ -46,7 +43,7 @@ $LN3:
 ; 13   :     void *PlatformData = InitializePlatform(L"Butterfly Engine");
 
   00004	48 8d 0d 00 00
-	00 00		 lea	 rcx, OFFSET FLAT:$SG96717
+	00 00		 lea	 rcx, OFFSET FLAT:$SG117862
   0000b	ff 15 00 00 00
 	00		 call	 QWORD PTR __imp_InitializePlatform
   00011	48 89 44 24 28	 mov	 QWORD PTR PlatformData$[rsp], rax
@@ -77,38 +74,29 @@ RunApplication PROC
 
 $LN5:
   00000	48 83 ec 28	 sub	 rsp, 40			; 00000028H
-
-; 5    :     PlatformConsoleWrite("This is a test!", 3);
-
-  00004	b2 03		 mov	 dl, 3
-  00006	48 8d 0d 00 00
-	00 00		 lea	 rcx, OFFSET FLAT:$SG96721
-  0000d	ff 15 00 00 00
-	00		 call	 QWORD PTR __imp_PlatformConsoleWrite
 $LN2@RunApplica:
 
-; 6    :     
-; 7    :     while(TRUE)
+; 5    :     while(TRUE)
 
-  00013	33 c0		 xor	 eax, eax
-  00015	83 f8 01	 cmp	 eax, 1
-  00018	74 08		 je	 SHORT $LN3@RunApplica
+  00004	33 c0		 xor	 eax, eax
+  00006	83 f8 01	 cmp	 eax, 1
+  00009	74 08		 je	 SHORT $LN3@RunApplica
 
-; 8    :     {
-; 9    :         UpdatePlatform();
+; 6    :     {
+; 7    :         UpdatePlatform();
 
-  0001a	ff 15 00 00 00
+  0000b	ff 15 00 00 00
 	00		 call	 QWORD PTR __imp_UpdatePlatform
 
-; 10   :     }
+; 8    :     }
 
-  00020	eb f1		 jmp	 SHORT $LN2@RunApplica
+  00011	eb f1		 jmp	 SHORT $LN2@RunApplica
 $LN3@RunApplica:
 
-; 11   : }
+; 9    : }
 
-  00022	48 83 c4 28	 add	 rsp, 40			; 00000028H
-  00026	c3		 ret	 0
+  00013	48 83 c4 28	 add	 rsp, 40			; 00000028H
+  00017	c3		 ret	 0
 RunApplication ENDP
 _TEXT	ENDS
 END

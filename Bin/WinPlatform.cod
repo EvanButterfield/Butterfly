@@ -39,7 +39,7 @@ $pdata$Win32WindowProc DD imagerel Win32WindowProc
 	DD	imagerel $unwind$Win32WindowProc
 pdata	ENDS
 _DATA	SEGMENT
-$SG96742 DB	'B', 00H, 'u', 00H, 't', 00H, 't', 00H, 'e', 00H, 'r', 00H
+$SG117887 DB	'B', 00H, 'u', 00H, 't', 00H, 't', 00H, 'e', 00H, 'r', 00H
 	DB	'f', 00H, 'l', 00H, 'y', 00H, 'W', 00H, 'i', 00H, 'n', 00H, 'd'
 	DB	00H, 'o', 00H, 'w', 00H, 'C', 00H, 'l', 00H, 'a', 00H, 's', 00H
 	DB	's', 00H, 00H, 00H
@@ -336,7 +336,7 @@ $LN5:
 ; 35   :     WindowClass.lpszClassName = L"ButterflyWindowClass";
 
   00085	48 8d 05 00 00
-	00 00		 lea	 rax, OFFSET FLAT:$SG96742
+	00 00		 lea	 rax, OFFSET FLAT:$SG117887
   0008c	48 89 84 24 b0
 	00 00 00	 mov	 QWORD PTR WindowClass$[rsp+64], rax
 

@@ -3,8 +3,14 @@
 #ifndef _CORE_H
 #define _CORE_H
 
+//NOTE(evan): WE ARE GOING TO ASSUME MSVC ON WINDOWS
+//            THIS IS VERY IMPORTANT
 #ifdef BTF_PLATFORM_WINDOWS
 #    include <Windows.h>
+#    include <intrin.h>
+
+#undef DebugBreak
+#define DebugBreak() __debugbreak()
 
 #    ifdef BTF_ENGINE
 #        define BTF_API __declspec(dllexport)
@@ -14,6 +20,18 @@
 #else
 #    error Butterfly only supports Windows!
 #endif
+
+#define BASSERT(X, Message) \
+{ \
+if(X) \
+{ \
+} \
+else \
+{ \
+BFATAL("%s: Assertion failed in file: %s on line: %d", Message, __FILE__, __LINE__); \
+DebugBreak(); \
+}\
+}
 
 #include <stdint.h>
 
