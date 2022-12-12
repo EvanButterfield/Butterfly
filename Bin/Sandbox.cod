@@ -5,116 +5,232 @@ include listing.inc
 INCLUDELIB LIBCMTD
 INCLUDELIB OLDNAMES
 
+PUBLIC	InitApplication
 PUBLIC	RunApplication
 PUBLIC	main
-EXTRN	__imp_InitializePlatform:PROC
-EXTRN	__imp_UpdatePlatform:PROC
-EXTRN	__imp__LogMessage:PROC
+EXTRN	__imp_BLogMessage:PROC
+EXTRN	__imp_BInitializePlatform:PROC
+EXTRN	__imp_BUpdatePlatform:PROC
+EXTRN	__imp_BAlloc:PROC
+EXTRN	__imp_BFree:PROC
+EXTRN	__imp_BPrintMemUsage:PROC
 pdata	SEGMENT
-$pdata$RunApplication DD imagerel $LN5
-	DD	imagerel $LN5+54
-	DD	imagerel $unwind$RunApplication
-$pdata$main DD	imagerel $LN3
-	DD	imagerel $LN3+45
+$pdata$InitApplication DD imagerel $LN3
+	DD	imagerel $LN3+94
+	DD	imagerel $unwind$InitApplication
+$pdata$main DD	imagerel $LN8
+	DD	imagerel $LN8+167
 	DD	imagerel $unwind$main
 pdata	ENDS
 _DATA	SEGMENT
-$SG117864 DB	'B', 00H, 'u', 00H, 't', 00H, 't', 00H, 'e', 00H, 'r', 00H
+$SG117892 DB	'B', 00H, 'u', 00H, 't', 00H, 't', 00H, 'e', 00H, 'r', 00H
 	DB	'f', 00H, 'l', 00H, 'y', 00H, ' ', 00H, 'E', 00H, 'n', 00H, 'g'
 	DB	00H, 'i', 00H, 'n', 00H, 'e', 00H, 00H, 00H
 	ORG $+6
-$SG117886 DB	'Initialized Application', 00H
-$SG117887 DB	'[App]:    ', 00H
+$SG117895 DB	'W:\Butterfly\Butterfly\src\BEntry.h', 00H
+	ORG $+4
+$SG117896 DB	'Application failed to initialize', 00H
+	ORG $+7
+$SG117897 DB	'%s: Assertion failed in file: %s on line: %d', 00H
+	ORG $+3
+$SG117898 DB	'[App]:    ', 00H
+	ORG $+5
+$SG117900 DB	'Exited with code: %d', 00H
+	ORG $+3
+$SG117901 DB	'[App]:    ', 00H
+	ORG $+5
+$SG117925 DB	'Initialized Application', 00H
+$SG117926 DB	'[App]:    ', 00H
 _DATA	ENDS
 xdata	SEGMENT
-$unwind$RunApplication DD 010901H
-	DD	04209H
-$unwind$main DD	010401H
+$unwind$InitApplication DD 010401H
 	DD	06204H
+$unwind$main DD	010d01H
+	DD	0820dH
 xdata	ENDS
 ; Function compile flags: /Odtp
-; File W:\Butterfly\Engine\src\Butterfly\Core\Entry.h
+; File W:\Butterfly\Butterfly\src\BEntry.h
 _TEXT	SEGMENT
-ErrorCode$ = 32
-PlatformData$ = 40
+ErrorCode$ = 48
+argc$ = 80
+argv$ = 88
 main	PROC
 
-; 12   : {
+; 14   : {
 
-$LN3:
-  00000	48 83 ec 38	 sub	 rsp, 56			; 00000038H
+$LN8:
+  00000	48 89 54 24 10	 mov	 QWORD PTR [rsp+16], rdx
+  00005	89 4c 24 08	 mov	 DWORD PTR [rsp+8], ecx
+  00009	48 83 ec 48	 sub	 rsp, 72			; 00000048H
 
-; 13   :     void *PlatformData = InitializePlatform(L"Butterfly Engine");
+; 15   :     BInitializePlatform(L"Butterfly Engine");
 
-  00004	48 8d 0d 00 00
-	00 00		 lea	 rcx, OFFSET FLAT:$SG117864
-  0000b	ff 15 00 00 00
-	00		 call	 QWORD PTR __imp_InitializePlatform
-  00011	48 89 44 24 28	 mov	 QWORD PTR PlatformData$[rsp], rax
-
-; 14   :     
-; 15   :     int ErrorCode = RunApplication(PlatformData);
-
-  00016	48 8b 4c 24 28	 mov	 rcx, QWORD PTR PlatformData$[rsp]
-  0001b	e8 00 00 00 00	 call	 RunApplication
-  00020	89 44 24 20	 mov	 DWORD PTR ErrorCode$[rsp], eax
+  0000d	48 8d 0d 00 00
+	00 00		 lea	 rcx, OFFSET FLAT:$SG117892
+  00014	ff 15 00 00 00
+	00		 call	 QWORD PTR __imp_BInitializePlatform
 
 ; 16   :     
-; 17   :     return(ErrorCode);
+; 17   :     BASSERT(InitApplication(), "Application failed to initialize");
 
-  00024	8b 44 24 20	 mov	 eax, DWORD PTR ErrorCode$[rsp]
+  0001a	e8 00 00 00 00	 call	 InitApplication
+  0001f	85 c0		 test	 eax, eax
+  00021	74 02		 je	 SHORT $LN4@main
+  00023	eb 32		 jmp	 SHORT $LN5@main
+$LN4@main:
+  00025	c7 44 24 28 11
+	00 00 00	 mov	 DWORD PTR [rsp+40], 17
+  0002d	48 8d 05 00 00
+	00 00		 lea	 rax, OFFSET FLAT:$SG117895
+  00034	48 89 44 24 20	 mov	 QWORD PTR [rsp+32], rax
+  00039	4c 8d 0d 00 00
+	00 00		 lea	 r9, OFFSET FLAT:$SG117896
+  00040	4c 8d 05 00 00
+	00 00		 lea	 r8, OFFSET FLAT:$SG117897
+  00047	48 8d 15 00 00
+	00 00		 lea	 rdx, OFFSET FLAT:$SG117898
+  0004e	33 c9		 xor	 ecx, ecx
+  00050	ff 15 00 00 00
+	00		 call	 QWORD PTR __imp_BLogMessage
+  00056	cc		 int	 3
+$LN5@main:
 
-; 18   : }
+; 18   :     
+; 19   :     int ErrorCode = 0;
 
-  00028	48 83 c4 38	 add	 rsp, 56			; 00000038H
-  0002c	c3		 ret	 0
+  00057	c7 44 24 30 00
+	00 00 00	 mov	 DWORD PTR ErrorCode$[rsp], 0
+$LN2@main:
+
+; 20   :     while(TRUE)
+
+  0005f	33 c0		 xor	 eax, eax
+  00061	83 f8 01	 cmp	 eax, 1
+  00064	74 1a		 je	 SHORT $LN3@main
+
+; 21   :     {
+; 22   :         BUpdatePlatform();
+
+  00066	ff 15 00 00 00
+	00		 call	 QWORD PTR __imp_BUpdatePlatform
+
+; 23   :         
+; 24   :         ErrorCode = RunApplication();
+
+  0006c	e8 00 00 00 00	 call	 RunApplication
+  00071	89 44 24 30	 mov	 DWORD PTR ErrorCode$[rsp], eax
+
+; 25   :         if(ErrorCode != 0)
+
+  00075	83 7c 24 30 00	 cmp	 DWORD PTR ErrorCode$[rsp], 0
+  0007a	74 02		 je	 SHORT $LN6@main
+
+; 26   :         {
+; 27   :             break;
+
+  0007c	eb 02		 jmp	 SHORT $LN3@main
+$LN6@main:
+
+; 28   :         }
+; 29   :     }
+
+  0007e	eb df		 jmp	 SHORT $LN2@main
+$LN3@main:
+
+; 30   :     
+; 31   :     BINFO("Exited with code: %d", ErrorCode);
+
+  00080	44 8b 4c 24 30	 mov	 r9d, DWORD PTR ErrorCode$[rsp]
+  00085	4c 8d 05 00 00
+	00 00		 lea	 r8, OFFSET FLAT:$SG117900
+  0008c	48 8d 15 00 00
+	00 00		 lea	 rdx, OFFSET FLAT:$SG117901
+  00093	b9 03 00 00 00	 mov	 ecx, 3
+  00098	ff 15 00 00 00
+	00		 call	 QWORD PTR __imp_BLogMessage
+
+; 32   :     return(ErrorCode);
+
+  0009e	8b 44 24 30	 mov	 eax, DWORD PTR ErrorCode$[rsp]
+
+; 33   : }
+
+  000a2	48 83 c4 48	 add	 rsp, 72			; 00000048H
+  000a6	c3		 ret	 0
 main	ENDP
 _TEXT	ENDS
 ; Function compile flags: /Odtp
 ; File W:\Butterfly\Sandbox\src\Sandbox.c
 _TEXT	SEGMENT
-PlatformData$ = 48
 RunApplication PROC
 
-; 4    : {
+; 19   :     return(0);
 
-$LN5:
-  00000	48 89 4c 24 08	 mov	 QWORD PTR [rsp+8], rcx
-  00005	48 83 ec 28	 sub	 rsp, 40			; 00000028H
+  00000	33 c0		 xor	 eax, eax
 
-; 5    :     BTRACE("Initialized Application");
+; 20   : }
 
-  00009	4c 8d 05 00 00
-	00 00		 lea	 r8, OFFSET FLAT:$SG117886
-  00010	48 8d 15 00 00
-	00 00		 lea	 rdx, OFFSET FLAT:$SG117887
-  00017	b9 05 00 00 00	 mov	 ecx, 5
-  0001c	ff 15 00 00 00
-	00		 call	 QWORD PTR __imp__LogMessage
-$LN2@RunApplica:
-
-; 6    :     
-; 7    :     while(TRUE)
-
-  00022	33 c0		 xor	 eax, eax
-  00024	83 f8 01	 cmp	 eax, 1
-  00027	74 08		 je	 SHORT $LN3@RunApplica
-
-; 8    :     {
-; 9    :         UpdatePlatform();
-
-  00029	ff 15 00 00 00
-	00		 call	 QWORD PTR __imp_UpdatePlatform
-
-; 10   :     }
-
-  0002f	eb f1		 jmp	 SHORT $LN2@RunApplica
-$LN3@RunApplica:
-
-; 11   : }
-
-  00031	48 83 c4 28	 add	 rsp, 40			; 00000028H
-  00035	c3		 ret	 0
+  00002	c3		 ret	 0
 RunApplication ENDP
+_TEXT	ENDS
+; Function compile flags: /Odtp
+; File W:\Butterfly\Sandbox\src\Sandbox.c
+_TEXT	SEGMENT
+Thing$ = 32
+InitApplication PROC
+
+; 6    : {
+
+$LN3:
+  00000	48 83 ec 38	 sub	 rsp, 56			; 00000038H
+
+; 7    :     BTRACE("Initialized Application");
+
+  00004	4c 8d 05 00 00
+	00 00		 lea	 r8, OFFSET FLAT:$SG117925
+  0000b	48 8d 15 00 00
+	00 00		 lea	 rdx, OFFSET FLAT:$SG117926
+  00012	b9 05 00 00 00	 mov	 ecx, 5
+  00017	ff 15 00 00 00
+	00		 call	 QWORD PTR __imp_BLogMessage
+
+; 8    :     
+; 9    :     void *Thing = BAlloc(MEM_TYPE_STRING, Gibibytes(1));
+
+  0001d	ba 00 00 00 40	 mov	 edx, 1073741824		; 40000000H
+  00022	b9 01 00 00 00	 mov	 ecx, 1
+  00027	ff 15 00 00 00
+	00		 call	 QWORD PTR __imp_BAlloc
+  0002d	48 89 44 24 20	 mov	 QWORD PTR Thing$[rsp], rax
+
+; 10   :     BPrintMemUsage();
+
+  00032	ff 15 00 00 00
+	00		 call	 QWORD PTR __imp_BPrintMemUsage
+
+; 11   :     BFree(MEM_TYPE_STRING, Thing, Gibibytes(1));
+
+  00038	41 b8 00 00 00
+	40		 mov	 r8d, 1073741824		; 40000000H
+  0003e	48 8b 54 24 20	 mov	 rdx, QWORD PTR Thing$[rsp]
+  00043	b9 01 00 00 00	 mov	 ecx, 1
+  00048	ff 15 00 00 00
+	00		 call	 QWORD PTR __imp_BFree
+
+; 12   :     BPrintMemUsage();
+
+  0004e	ff 15 00 00 00
+	00		 call	 QWORD PTR __imp_BPrintMemUsage
+
+; 13   :     
+; 14   :     return(TRUE);
+
+  00054	b8 01 00 00 00	 mov	 eax, 1
+
+; 15   : }
+
+  00059	48 83 c4 38	 add	 rsp, 56			; 00000038H
+  0005d	c3		 ret	 0
+InitApplication ENDP
 _TEXT	ENDS
 END

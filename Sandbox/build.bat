@@ -14,7 +14,7 @@ set CompileFlags=-UTF8 -MTd -nologo -Gm- -GR- -EHa- -Od -Oi -WX -W4 -wd4221 -wd4
 
 set Defines=-DBTF_PLATFORM_WINDOWS -DBTF_APP -DBTF_DEBUG -DUNICODE=1
 
-set Includes=-I..\Engine\src -IW:\Butterfly\Engine\src\Butterfly
+set Includes=-I..\Butterfly\src
 
 set LinkFlags=-incremental:no -opt:ref Engine.lib user32.lib
 

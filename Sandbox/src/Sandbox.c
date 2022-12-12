@@ -1,11 +1,19 @@
 #include <Butterfly.h>
 
-int RunApplication(void *PlatformData)
+static b32 Initialized;
+
+b32 InitApplication()
 {
-    BTRACE("Initialized Application");
+    void *Thing = BAlloc(MEM_TYPE_STRING, Gibibytes(1));
+    BPrintMemUsage();
+    BFree(MEM_TYPE_STRING, Thing, Gibibytes(1));
+    BPrintMemUsage();
     
-    while(TRUE)
-    {
-        UpdatePlatform();
-    }
+    BTRACE("Initialized Application");
+    return(TRUE);
+}
+
+int RunApplication()
+{
+    return(0);
 }
